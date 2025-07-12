@@ -12,14 +12,14 @@ export class SellerRepository {
         role: "SELLER",
       },
     });
-    const seller =  await prisma.seller.create({
+    const seller = await prisma.seller.create({
       data,
     });
     await prisma.wallet.create({
       data: {
-        sellerId: seller.id, 
-        balance: 0.0, 
-        totalEarned: 0.0, 
+        sellerId: seller.id,
+        balance: 0.0,
+        totalEarned: 0.0,
       },
     });
     return seller;
@@ -42,6 +42,7 @@ export class SellerRepository {
         products: {
           include: {
             category: true,
+            ratings: true,
           },
         },
       },
@@ -79,22 +80,23 @@ export class SellerRepository {
           },
         },
       });
-  
+
       if (!order || !order.seller) {
         throw new Error("Seller not found for the given order.");
       }
-  
+
       return order.seller;
     } catch (error) {
       console.error("Error fetching seller and wallet:", error);
       throw new Error("Failed to fetch seller and wallet.");
     }
   }
-  
 
-  async createTransaction(data: Prisma.TransactionCreateInput & { walletId: string; orderId: string }) {
+  async createTransaction(
+    data: Prisma.TransactionCreateInput & { walletId: string; orderId: string }
+  ) {
     const { walletId, orderId, ...transactionData } = data;
-  
+
     return prisma.transaction.create({
       data: {
         ...transactionData,
@@ -105,7 +107,7 @@ export class SellerRepository {
         },
         order: {
           connect: {
-            id: orderId, 
+            id: orderId,
           },
         },
       },
@@ -150,6 +152,16 @@ export class SellerRepository {
   }
 
   async listAllSellers() {
-    return prisma.seller.findMany();
+    return prisma.seller.findMany({
+      include: {
+        user: {
+          select: {
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
   }
 }

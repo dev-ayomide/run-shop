@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { initiatePaymentSchema } from "./schemas";
+import { initiatePaymentSchema, verifyPaymentSchema } from "./schemas";
 import { AppError } from "../../../middlewares/error.handler";
 
 export const validateInitiatePayment = (
@@ -9,6 +9,23 @@ export const validateInitiatePayment = (
   next: NextFunction
 ) => {
   const { error } = initiatePaymentSchema.validate(req.body);
+  if (error) {
+    return next(
+      new AppError(
+        error.details.map((err) => err.message).join(", "),
+        StatusCodes.BAD_REQUEST
+      )
+    );
+  }
+  next();
+};
+
+export const validateVerifyPayment = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { error } = verifyPaymentSchema.validate(req.params);
   if (error) {
     return next(
       new AppError(

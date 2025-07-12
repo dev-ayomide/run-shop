@@ -46,7 +46,6 @@ export class OrderRepository {
           totalPrice: true,
           orderStatus: true,
           paymentMethod: true,
-          escrowStatus: true,
           createdAt: true,
           orderItems: {
             select: {

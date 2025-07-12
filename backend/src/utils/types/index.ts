@@ -33,7 +33,6 @@ export type ICreateOrder = Prisma.OrderCreateInput & {
   }[];
 };
 
-
 export type TokenPayload = Omit<Prisma.UserCreateInput, "password">;
 
 export type IUpdateUser = Prisma.UserUpdateInput;
@@ -51,4 +50,12 @@ export interface ProductFilters {
 export interface PaymentResponse {
   checkoutUrl: string;
   transactionRef: string;
+}
+
+export interface InitiatePaymentRequest {
+  email: string;
+  amount: string;
+  metadata: {
+    cartId: string;
+  };
 }

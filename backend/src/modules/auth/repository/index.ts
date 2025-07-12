@@ -23,7 +23,7 @@ export class AuthRepository {
       },
       include: {
         seller: true,
-        wishlist: {
+        cart: {
           select: {
             id: true,
           },

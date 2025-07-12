@@ -1,11 +1,11 @@
 import { AuthService } from "../service";
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { WishListService } from "../../../modules/wish-list/service";
+import { CartService } from "../../cart/service";
 import { verifyToken } from "../../../utils/jwt";
 
 const authService = new AuthService();
-const wishListService = new WishListService();
+const cartService = new CartService();
 
 export class AuthController {
   register = async (req: Request, res: Response, next: NextFunction) => {
@@ -13,7 +13,7 @@ export class AuthController {
       const user = await authService.register(req.body);
       setImmediate(async () => {
         const id = verifyToken(user.token).id;
-        await wishListService.createWishlist(id);
+        await cartService.createCart(id);
       });
       res.status(StatusCodes.CREATED).json(user);
     } catch (error) {
@@ -40,7 +40,7 @@ export class AuthController {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
-        wishlist: user.wishlist,
+        cart: user.cart,
         hostelName: user.hostelName,
         blockNumber: user.blockNumber,
         roomNo: user.roomNo,

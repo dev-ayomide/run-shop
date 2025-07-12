@@ -38,10 +38,18 @@ export class ProductRepository {
           },
         },
         seller: {
-          select:{
+          select: {
             id: true,
             catalogueName: true,
-          }
+          },
+        },
+        ratings: {
+          select: {
+            rating: true,
+            review: true,
+            user: { select: { firstName: true } },
+            createdAt: true
+          },
         },
       },
     });

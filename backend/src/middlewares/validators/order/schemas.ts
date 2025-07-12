@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { OrderStatus, PaymentMethod, EscrowStatus } from "@prisma/client"; // Import Prisma enums
+import { OrderStatus, PaymentMethod } from "@prisma/client"; // Import Prisma enums
 
 export const orderSchema = Joi.object({
   sellerId: Joi.string().required(),
@@ -19,9 +19,6 @@ export const orderSchema = Joi.object({
     .required(),
   paymentMethod: Joi.string()
     .valid(...Object.values(PaymentMethod))
-    .required(),
-  escrowStatus: Joi.string()
-    .valid(...Object.values(EscrowStatus))
     .required(),
   hostelName: Joi.string().required(), 
   blockNumber: Joi.number().integer().required(),

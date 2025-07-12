@@ -27,4 +27,8 @@ export class UserRepository {
       },
     });
   };
+
+  rateProduct = async (data: Prisma.RatingCreateInput) => {
+    return prisma.rating.create({ data });
+  };
 }

@@ -29,7 +29,7 @@ model User {
 
   seller   Seller?
   orders   Order[]
-  wishlist Wishlist?
+  cart     Cart?
   chats    Chat[]
   messages Message[]
   ratings  Rating[]
@@ -55,7 +55,6 @@ model Seller {
   products Product[]
   orders   Order[]
   chats    Chat[]
-  ratings  Rating[]
 }
 
 enum PaymentMethod {
@@ -90,7 +89,8 @@ model Product {
   seller        Seller         @relation(fields: [sellerId], references: [id], onDelete: Cascade)
   category      Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   orderItems    OrderItem[]
-  wishlistItems WishlistItem[]
+  cartItems     CartItem[]
+  ratings Rating[]
 }
 
 model Category {
@@ -109,7 +109,6 @@ model Order {
   totalPrice    Decimal
   orderStatus   OrderStatus
   paymentMethod PaymentMethod
-  escrowStatus  EscrowStatus  @default(HELD)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   hostelName      String
@@ -131,11 +130,6 @@ enum OrderStatus {
   CANCELLED
 }
 
-enum EscrowStatus {
-  HELD
-  RELEASED
-  CANCELLED
-}
 
 model OrderItem {
   id        String  @id @default(uuid())
@@ -148,23 +142,24 @@ model OrderItem {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
-model Wishlist {
+model Cart {
   id        String   @id @default(uuid())
   userId    String   @unique
   createdAt DateTime @default(now())
 
-  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items WishlistItem[]
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cartItems CartItem[]
 }
 
-model WishlistItem {
+model CartItem {
   id         String   @id @default(uuid())
-  wishlistId String
+  cartId     String
   productId  String
+  quantity   Int      @default(1)
   createdAt  DateTime @default(now())
 
-  wishlist Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
-  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Chat {
@@ -227,11 +222,11 @@ enum TransactionStatus {
 model Rating {
   id        String   @id @default(uuid())
   userId    String
-  sellerId  String
+  productId String
   rating    Int
   review    String?
   createdAt DateTime @default(now())
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  seller Seller @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }

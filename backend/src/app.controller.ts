@@ -6,7 +6,7 @@ import userRoutes from "./modules/user/routes";
 import sellerRoutes from "./modules/seller/routes";
 import categoryRoutes from "./modules/category/routes";
 import productRoutes from "./modules/product/routes";
-import wishListRoutes from "./modules/wish-list/routes";
+import cartRoutes from "./modules/cart/routes";
 import orderRoutes from "./modules/order/routes";
 import paymentRoutes from "./modules/payments/routes";
 import cors from "cors";
@@ -38,7 +38,7 @@ export class Server {
     this.apiRouter.use("/categories", categoryRoutes);
     this.apiRouter.use("/products", productRoutes);
     this.apiRouter.use("/orders", orderRoutes);
-    this.apiRouter.use("/wish-lists", wishListRoutes);
+    this.apiRouter.use("/cart", cartRoutes);
     this.apiRouter.use("/payments", paymentRoutes);
     this.app.use("/api/v1", this.apiRouter);
     this.app.use(errorHandler);

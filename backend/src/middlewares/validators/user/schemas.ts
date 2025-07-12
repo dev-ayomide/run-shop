@@ -10,3 +10,9 @@ export const updateUserSchema = Joi.object({
   lastName: Joi.string().optional(),
   shippingAddress: Joi.string().optional(),
 });
+
+export const reviewSellerSchema = Joi.object({
+  productId: Joi.string().required(),
+  rating: Joi.number().integer().min(1).max(5).required(),
+  review: Joi.string().optional(),
+});

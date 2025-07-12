@@ -1,17 +1,26 @@
 import { Router } from "express";
 import { PaymentController } from "./controller";
 import { authGuard } from "../../middlewares";
-import { validateInitiatePayment } from "../../middlewares/validators/payment/validators";
+import { validateInitiatePayment, validateVerifyPayment } from "../../middlewares/validators/payment";
 
 const router = Router();
 const paymentController = new PaymentController();
 
 router.post(
   "/initiate",
-  // authGuard,
+  authGuard,
   validateInitiatePayment,
   paymentController.initiatePayment
 );
-// router.post("/webhook", paymentController.handleWebHook);
+
+router.get(
+  "/verify/:reference",
+  authGuard,
+  validateVerifyPayment,
+  paymentController.verifyPayment
+);
+
+
+router.post("/webhook", paymentController.handleWebhook);
 
 export default router;

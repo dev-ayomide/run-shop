@@ -34,4 +34,14 @@ export class UserController {
     }
   };
 
+  rateProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      req.body.userId = req.user.id;
+      const result = await userService.rateProduct(req.body);
+      res.status(StatusCodes.CREATED).json({ message: "Product rating submitted successfully", rating: result });
+    } catch (error) {
+      next(error);
+    }
+  };
+
 }

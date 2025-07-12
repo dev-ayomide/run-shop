@@ -3,7 +3,7 @@ import { Router } from "express";
 import {
   productIdValidator,
   productFiltersValidator,
-} from "../../middlewares/validators/product/validators";
+} from "../../middlewares/validators/product";
 
 const productController = new ProductController();
 const router = Router();

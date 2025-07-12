@@ -1,38 +1,58 @@
 import { Request, Response, NextFunction } from "express";
 import { PaymentService } from "../service";
 import { StatusCodes } from "http-status-codes";
+import crypto from "crypto";
 
 const paymentService = new PaymentService();
+const secret = process.env.PAYSTACK_SECRET_KEY;
 
 export class PaymentController {
   async initiatePayment(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, name, amount, orderId } = req.body;
-      console.log(req.body);
-      const paymentResponse = await paymentService.initiatePayment(
-        email,
-        name,
-        amount,
-        orderId
-      );
+      const paymentResponse = await paymentService.initiatePayment(req.body);
+
+      res.status(StatusCodes.OK).json(paymentResponse);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async verifyPayment(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { reference } = req.params;
+
+      const paymentData = await paymentService.verifyPayment(reference);
 
       res.status(StatusCodes.OK).json({
-        message: "Payment initiated successfully",
-        data: paymentResponse,
+        message: "Payment verification successful",
+        data: paymentData,
       });
     } catch (error) {
       next(error);
     }
   }
 
-  // async handleWebHook(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     console.log(req.body);
-  //     const { Body:{transaction_ref} } = req.body;
+  async handleWebhook(req: Request, res: Response, next: NextFunction) {
+    try {
+      // ensure an attacker can't send a fake webhook confirmation
+      const hash = crypto
+        .createHmac("sha512", secret)
+        .update(JSON.stringify(req.body))
+        .digest("hex");
 
-  //     await paymentService.handleWebHook(transaction_ref);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+      if (hash == req.headers["x-paystack-signature"]) {
+        const event = req.body;
+
+        setImmediate(async () => {
+          await paymentService.handleWebhook(event);
+        });
+
+        res.status(StatusCodes.OK).json({
+          message: "Webhook processed successfully",
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
 }

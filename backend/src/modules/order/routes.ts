@@ -1,6 +1,6 @@
 import { OrderController } from "./controller";
 import { Router } from "express";
-import { validateOrder } from "../../middlewares/validators/order/validators";
+import { validateOrder } from "../../middlewares/validators/order";
 import { authGuard } from "../../middlewares/auth.middleware";
 
 const orderController = new OrderController();

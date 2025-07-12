@@ -36,7 +36,6 @@ router.post(
   sellerController.addProductToCatalogue
 );
 
-//update product in catalogue
 router.put(
   "/:id/catalogue",
   authGuard,

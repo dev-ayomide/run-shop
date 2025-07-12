@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { validateId, updateUserSchema } from "./schemas";
+import { validateId, updateUserSchema, reviewSellerSchema } from "./schemas";
 
 export const validateUserId = async (
   req: Request,
@@ -24,5 +24,17 @@ export const validateUpdateUser = async (
     return res.status(400).json({ message: error.details.map((err) => err.message).join(", ") });
   }
 
+  next();
+};
+
+export const validateReviewSeller = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { error } = reviewSellerSchema.validate(req.body, { abortEarly: false });
+  if (error) {
+    return res.status(400).json({ message: error.details.map((err) => err.message).join(", ") });
+  }
   next();
 };

@@ -1,5 +1,6 @@
 import { IUpdateUser } from "utils/types";
 import { UserRepository } from "../repository";
+import { Prisma } from "@prisma/client";
 
 const userRepo = new UserRepository();
 
@@ -14,5 +15,9 @@ export class UserService {
 
   deleteUser = async (id: string) => {
     return userRepo.deleteUser(id);
+  };
+
+  rateProduct = async (data: Prisma.RatingCreateInput) => {
+    return userRepo.rateProduct(data);
   };
 }
